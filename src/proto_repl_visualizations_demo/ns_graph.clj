@@ -3,6 +3,7 @@
    distributed under EPL license."
   (:require [clojure.java.io :as io]
             [clojure.java.classpath :as cp]
+            [clojure.java.shell :as sh]
             [clojure.string :as str]
             prc
             [clojure.tools.namespace.file :as ns-file]
@@ -54,7 +55,7 @@
   (let [ns-name (name ns-sym)]
     {:id ns-sym
      :label ns-sym
-     :group (second (re-find #"([^.]+)(?:\..*)" ns-name))}))
+     :group (second (re-find #"(.+)\.[^.]+" ns-name))}))
 
 (def nodes
   "The nodes to display for the graph"
@@ -72,12 +73,68 @@
             [node dep])))
        (filter applicable-edge?)))
 
+(defn read-node-name-handler
+  [click-data]
+  (let [node (-> click-data :nodes first :label)]
+    (sh/sh "say" node)))
 
-(prc/graph
- "ns-graph"
- ;; The graph
- {:nodes nodes
-  :edges edges}
+(defn recenter-graph
+  [click-data]
+  (let [node (-> click-data :nodes first :label)]
 
- ;; Options
- {:edges {:arrows "to"}})
+    (prc/graph
+     "ns-graph"
+     ;; The graph
+     {:nodes nodes
+      :edges edges}
+     ;; Options
+     {:edges {:arrows "to"}
+      :events {:doubleClick 'proto-repl-visualizations-demo.ns-graph/handle-double-click}})))
+
+(def excluded-nss (atom #{}))
+
+(defn exclude-node-handler
+  [click-data]
+  (let [exclude-ns (-> click-data :nodes first :label symbol)
+        _ (swap! excluded-nss conj exclude-ns)
+        filtered-nodes (filter #(not (contains? @excluded-nss (:id %))) nodes)
+        filtered-edges (filter #(not (or (contains? @excluded-nss (first %))
+                                         (contains? @excluded-nss (second %))))
+                                edges)]
+    (prc/graph
+     "ns-graph"
+     {:nodes filtered-nodes
+      :edges filtered-edges}
+     {:edges {:arrows "to"}
+      :events {:doubleClick 'proto-repl-visualizations-demo.ns-graph/handle-double-click}})))
+
+
+
+
+
+
+; http://visjs.org/examples/network/datasources/WorldCup2014.js
+
+(defn handle-double-click
+  [click-data]
+  (exclude-node-handler click-data))
+
+(defn draw-full-graph
+  []
+  (prc/graph
+   "ns-graph"
+   ;; The graph
+   {:nodes nodes
+    :edges edges}
+   ;; Options
+   {:edges {:arrows "to"}
+    :events {:doubleClick 'proto-repl-visualizations-demo.ns-graph/handle-double-click}
+    :physics {:stabilization false
+               :barnesHut {:gravitationalConstant -2000}}}))
+                           ; :springConstant 0.001}}}))
+
+
+
+
+(comment
+ (draw-full-graph))
