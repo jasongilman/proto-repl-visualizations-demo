@@ -78,19 +78,6 @@
   (let [node (-> click-data :nodes first :label)]
     (sh/sh "say" node)))
 
-(defn recenter-graph
-  [click-data]
-  (let [node (-> click-data :nodes first :label)]
-
-    (prc/graph
-     "ns-graph"
-     ;; The graph
-     {:nodes nodes
-      :edges edges}
-     ;; Options
-     {:edges {:arrows "to"}
-      :events {:doubleClick 'proto-repl-visualizations-demo.ns-graph/handle-double-click}})))
-
 (def excluded-nss (atom #{}))
 
 (defn exclude-node-handler
@@ -108,16 +95,10 @@
      {:edges {:arrows "to"}
       :events {:doubleClick 'proto-repl-visualizations-demo.ns-graph/handle-double-click}})))
 
-
-
-
-
-
-; http://visjs.org/examples/network/datasources/WorldCup2014.js
-
 (defn handle-double-click
   [click-data]
-  (exclude-node-handler click-data))
+  (read-node-name-handler click-data))
+  ; (exclude-node-handler click-data))
 
 (defn draw-full-graph
   []
@@ -130,8 +111,8 @@
    {:edges {:arrows "to"}
     :events {:doubleClick 'proto-repl-visualizations-demo.ns-graph/handle-double-click}
     :physics {:stabilization false
-               :barnesHut {:gravitationalConstant -2000}}}))
-                           ; :springConstant 0.001}}}))
+               :barnesHut {:gravitationalConstant -2000
+                           :springConstant 0.01}}}))
 
 
 
