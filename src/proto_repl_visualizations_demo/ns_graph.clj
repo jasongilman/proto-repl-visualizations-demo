@@ -115,7 +115,4 @@
                            :springConstant 0.01}}}))
 
 
-
-
-(comment
- (draw-full-graph))
+(draw-full-graph)
