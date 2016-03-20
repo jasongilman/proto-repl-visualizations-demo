@@ -1,4 +1,4 @@
-(ns proto-repl-visualizations-demo.core
+(ns proto-repl-visualizations-demo.time-chart
   (:require [clojure.data.csv :as csv]
             [clojure.string :as str]
             [clj-time.core :as t]
