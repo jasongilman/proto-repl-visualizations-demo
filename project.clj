@@ -1,6 +1,6 @@
 (defproject proto-repl-visualizations-demo "0.1.0-SNAPSHOT"
   :description "A demonstration project for Proto REPL and "
-  :url "http://example.com/FIXME"
+  :url "https://github.com/jasongilman/proto-repl-visualizations-demo"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.8.0"]
