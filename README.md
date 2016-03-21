@@ -1,10 +1,8 @@
 # proto-repl-visualizations-demo
 
-A Demo of various features of visualization with Proto REPL and Proto REPL Charts
+A demo of visualizing various kinds of data with Proto REPL and Proto REPL Charts
 
 ## Demos
-
-Note that the images here don't do justice to the experience of viewing an interacting with them in the Atom editor.
 
 ### [Creating a histogram over time](https://github.com/jasongilman/proto-repl-visualizations-demo/blob/master/src/proto_repl_visualizations_demo/time_chart.clj)
 
